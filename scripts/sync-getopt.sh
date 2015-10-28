@@ -2,25 +2,20 @@
 GETOPT_COMPATIBLE=1
 ########################################################################
 #
-# This has our options for -esome  --env some -- type usage
+# This has our command line options
 ########################################################################
 usage() {
     echo "${0} required parameters"
-    echo "-d --direction	: specify the sync direction up or down allowed"
-    echo "-e --env    	: specify the environment"
+    echo "-d	: specify the sync direction up or down allowed"
+    echo "-e    	: specify the environment"
+    echo "-t	: specify the team"
+    echo "-a :	specify the app"
     exit 1
 }
 
-# deal with getopt on mac osx
-if [ -f /usr/local/opt/gnu-getopt/bin/getopt ]; then
-    getopt=/usr/local/opt/gnu-getopt/bin/getopt
-else
-    getopt=getopt
-fi
-
-TEMP=$($getopt -o e:d: --long env:,direction: -n $0 -- "$@")
+TEMP=$(getopt a:e:d:t: $@)
 if [ $? -ne 0 ]; then
-    echo "Parser problem. Make sure you have the right getopt installed."
+    echo "Parser problem maybe."
     usage
 fi
 
@@ -29,17 +24,23 @@ eval set -- "$TEMP"
 
 while true ; do
     case "$1" in
-        -d|--direction)
+        -a)
+            app=$2
+            shift 2
+            ;;
+        -d)
             direction=$2
             shift 2
             ;;
-        -e|--env)
+        -e)
             env=$2
+            shift 2
+            ;;
+        -t)
+            team=$2
             shift 2
             ;;
         --) shift ; break ;;
         *) echo "Big fail. Check that getopt matches your case statement! $1 $2" ; exit 1 ;;
     esac
 done
-
-
