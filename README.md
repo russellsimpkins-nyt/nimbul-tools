@@ -2,6 +2,15 @@
 
 This project is useful for syncing nimbul start scripts/code.
 
+**IMPORTANT** - Create a scripts/.aws_creds file that contains a valid AWS_SECRET pair and your nimbul 3 token e.g.
+
+```
+> cat scripts/.aws_creds 
+AWS_ACCESS_KEY_ID=AKI#############GJAA
+AWS_SECRET_ACCESS_KEY=LZa##############################bvU+fRr
+TOKEN=ed2#########################1930
+```
+
 If you haven't run this tool before start by running the following to bring down all of your scripts from S3
 
 ```
