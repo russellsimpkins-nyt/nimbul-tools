@@ -16,6 +16,8 @@ fi
 
 if [ -f "${path}/.aws_creds" ]; then
     source "${path}/.aws_creds"
+else
+    echo "Missing ${path}/.aws_creds file with AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and TOKEN"
 fi
 
 if [[ "" == "${AWS_ACCESS_KEY_ID}" || "" == "${AWS_SECRET_ACCESS_KEY}" ]]; then
