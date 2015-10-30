@@ -7,11 +7,12 @@ path=$( dirname "${BASH_SOURCE[0]}" )
 
 source ${path}/sync-getopt.sh
 
-if [[ "$env" == "" || "$direction" =~ /(up|down)/ || "$team" == "" || "$app" == "" ]]; then
-    echo "Missing required parameter(s) $direction $env"
+if [[ "$env" == "" || "$direction" =~ /(up|down)/ || "$team" == "" ]]; then
+    echo "Missing required parameter(s) $direction $env $team"
     usage
     exit 1
 fi
+
 
 if [ -f "${path}/.aws_creds" ]; then
     source "${path}/.aws_creds"
@@ -33,9 +34,22 @@ if [ "${direction}"  == "up" ]; then
     if [ "${app}" == "ci" ]; then
         AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync ./remote/${team}/${env}/${app}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/
     else
-        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --delete ./remote/${team}/${env}/${app}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/
+        if [ "${app}" == "" ]; then
+            AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=remote/${team}/dev/ci/** --delete ./remote/${team}/${env}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/testing/
+        else 
+            AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --delete ./remote/${team}/${env}/${app}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/
+        fi
     fi
 else
-    echo aws s3 sync s3://infrastructure-deploy-nyt-net/${team}/${env}/ ./remote/${team}/${env}/
-    aws s3 sync s3://infrastructure-deploy-nyt-net/${team}/${env}/ ./remote/${team}/${env}/
+
+    if [ "${app}" == "" ]; then
+        echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=*yumrepo* s3://infrastructure-deploy-nyt-net/${team}/${env}/ ./remote/${team}/${env}/
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=*yumrepo*  s3://infrastructure-deploy-nyt-net/${team}/${env}/ ./remote/${team}/${env}/
+    else
+        echo AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=*yumrepo* s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/ ./remote/${team}/${env}/${app}/
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=*yumrepo*  s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/ ./remote/${team}/${env}/${app}/
+    fi
+    
 fi
+
+
