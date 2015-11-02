@@ -37,7 +37,7 @@ if [ "${direction}"  == "up" ]; then
         AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync ./remote/${team}/${env}/${app}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/
     else
         if [ "${app}" == "" ]; then
-            AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=remote/${team}/dev/ci/** --delete ./remote/${team}/${env}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/testing/
+            AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --exclude=remote/${team}/dev/ci/** --delete ./remote/${team}/${env}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/
         else 
             AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws s3 sync --delete ./remote/${team}/${env}/${app}/ s3://infrastructure-deploy-nyt-net/${team}/${env}/${app}/
         fi
